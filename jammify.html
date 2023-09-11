@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jammify</title> <!-- Updated title -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column; /* Change to column layout */
+        }
+
+        .quadrant-container {
+            flex: 1;
+            display: flex;
+            flex-direction: row; /* Arrange quadrants horizontally */
+        }
+
+        .quadrant {
+            flex: 1;
+            transition: background-color 1s;
+            background-color: white; /* Default background color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px; /* Larger font size */
+            font-weight: bold;
+            font-family: sans-serif; /* Sans-serif font */
+        }
+
+        #topLeft {
+            background-color: blue; /* Fixed color */
+        }
+
+        #topRight {
+            background-color: green; /* Fixed color */
+        }
+
+        #bottomLeft {
+            background-color: red; /* Fixed color */
+        }
+
+        #bottomRight {
+            background-color: yellow; /* Fixed color */
+        }
+
+        #controlPanel {
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            height: 20px; /* Reduced height to 20px */
+        }
+    </style>
+</head>
+<body>
+    <div id="controlPanel">
+        <label for="intervalInput">Interval (seconds):</label>
+        <input type="number" id="intervalInput" min="5" value="15">
+        <button id="updateButton">Update Interval</button>
+    </div>
+
+    <div class="quadrant-container">
+        <div class="quadrant" id="topLeft">
+            Drums
+        </div>
+        <div class="quadrant" id="topRight">
+            Guitar 1
+        </div>
+    </div>
+    <div class="quadrant-container">
+        <div class="quadrant" id="bottomLeft">
+            Bass
+        </div>
+        <div class="quadrant" id="bottomRight">
+            Guitar 2
+        </div>
+    </div>
+
+    <script>
+        const intervalInput = document.getElementById("intervalInput");
+        let updateButton = document.getElementById("updateButton");
+
+        function updateQuadrants() {
+            const topLeft = document.getElementById("topLeft");
+            const topRight = document.getElementById("topRight");
+            const bottomLeft = document.getElementById("bottomLeft");
+            const bottomRight = document.getElementById("bottomRight");
+
+            topLeft.classList.toggle("color", Math.random() > 0.05); // 95% probability of being blue
+            topRight.classList.toggle("color", Math.random() > 0.6); // 40% probability of being green
+            bottomLeft.classList.toggle("color", Math.random() > 0.2); // 80% probability of being red
+            bottomRight.classList.toggle("color", Math.random() > 0.6); // 40% probability of being yellow
+
+            topLeft.style.backgroundColor = topLeft.classList.contains("color") ? "blue" : "white";
+            topRight.style.backgroundColor = topRight.classList.contains("color") ? "green" : "white";
+            bottomLeft.style.backgroundColor = bottomLeft.classList.contains("color") ? "red" : "white";
+            bottomRight.style.backgroundColor = bottomRight.classList.contains("color") ? "yellow" : "white";
+
+            const intervalInSeconds = parseInt(intervalInput.value, 10);
+
+            // Set the next update after the specified interval
+            setTimeout(updateQuadrants, (intervalInSeconds * 1000));
+        }
+
+        // Function to clear event listeners from the button
+        function clearEventListeners(element) {
+            const newElement = element.cloneNode(true);
+            element.parentNode.replaceChild(newElement, element);
+            return newElement;
+        }
+
+        // Add event listener to update interval button
+        updateButton.addEventListener("click", function () {
+            updateButton.disabled = true; // Disable the button during the update
+            updateQuadrants(); // Start with the new interval immediately
+            // Clear event listeners from the button to prevent multiple clicks during the update
+            updateButton = clearEventListeners(updateButton);
+
+            // Re-enable the button after a delay (e.g., 2 seconds)
+            setTimeout(() => {
+                updateButton.disabled = false;
+            }, 200);
+        });
+    </script>
+</body>
+</html>
